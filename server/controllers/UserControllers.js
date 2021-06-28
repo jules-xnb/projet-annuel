@@ -43,27 +43,27 @@ exports.login = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
-exports.update = (req, res, next) => {
+// exports.update = (req, res, next) => {
 
-}
+// }
 
-/// Trouver comment sécuriser
-exports.delete = (req, res, next) => {
-  User.findOneAndDelete({ address: req.body.address }, (err, user) => {
-    if (err) {
-        return res.status(400).json({ success: false, error: err })
-    }
+// /// Trouver comment sécuriser TODO : verifier avec l'userId 
+// exports.delete = (req, res, next) => {
+//   User.findOneAndDelete({ address: req.body.address }, (err, user) => {
+//     if (err) {
+//         return res.status(400).json({ success: false, error: err })
+//     }
 
-    if (!user) {
-        return res
-            .status(404)
-            .json({ success: false, error: `User not found` })
-    }
+//     if (!user) {
+//         return res
+//             .status(404)
+//             .json({ success: false, error: `User not found` })
+//     }
 
-    return res.status(200).json({ success: true, data: user })
-  }).catch(err => console.log(err))
+//     return res.status(200).json({ success: true, data: user })
+//   }).catch(err => console.log(err))
   
-};
+// };
 
 exports.getAll = (req, res, next) => {
   User.find({})
