@@ -10,7 +10,13 @@ createBid = (req, res) => {
         })
     }
 
-    const bid = new Bid(body)
+    const bid = new Bid({
+        idItem: body.idItem, 
+        dateEnd: body.dateEnd, 
+        actualPrice: body.actualPrice, 
+        bidderAddress: "pas encore d'acheteur",
+        creatorAddress: body.creatorAddress
+    })
 
     if (!bid) {
         return res.status(400).json({ success: false, error: err })
@@ -43,18 +49,16 @@ updateBid = async (req, res) => {
         })
     }
 
-    Bid.findOne({ _id: req.params.id }, (err, bid) => {
+    Bid.findOne({ _id: req.body.id }, (err, bid) => {
         if (err) {
             return res.status(404).json({
                 err,
                 message: 'Bid not found!',
             })
         }
-        bid.image = body.image
-        bid.possAddress = body.possAddress
-        bid.creatorAddress = body.creatorAddress
-        bid.comment = body.comment
-        bid.createdTimestamp = body.createdTimestamp
+        bid.active = body.active
+        bid.actualPrice = body.actualPrice, 
+        bid.bidderAddress = body.bidderAddress
         bid
             .save()
             .then(() => {
@@ -74,7 +78,7 @@ updateBid = async (req, res) => {
 }
 
 deleteBid = async (req, res) => {
-    await Bid.findOneAndDelete({ _id: req.params.id }, (err, bid) => {
+    await Bid.findOneAndDelete({ _id: req.body.id }, (err, bid) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -89,20 +93,6 @@ deleteBid = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getBidById = async (req, res) => {
-    await Bid.findOne({ _id: req.params.id }, (err, bid) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-
-        if (!bid) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Bid not found` })
-        }
-        return res.status(200).json({ success: true, data: bid })
-    }).catch(err => console.log(err))
-}
 
 getBids = async (req, res) => {
     await Bid.find({}, (err, bids) => {
@@ -122,6 +112,5 @@ module.exports = {
     createBid,
     updateBid,
     deleteBid,
-    getBids,
-    getBidById,
+    getBids
 }

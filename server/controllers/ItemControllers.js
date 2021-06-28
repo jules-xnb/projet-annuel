@@ -1,4 +1,5 @@
 const Item = require('../models/ItemModels')
+const mongoose = require('mongoose')
 
 createItem = (req, res) => {
     const body = req.body
@@ -10,7 +11,12 @@ createItem = (req, res) => {
         })
     }
 
-    const item = new Item(body)
+    const item = new Item({
+        image: body.image, 
+        possAddress: body.address,
+        creatorAddress: body.address,
+        comment: body.comment
+    })
 
     if (!item) {
         return res.status(400).json({ success: false, error: err })
@@ -43,17 +49,14 @@ updateItem = async (req, res) => {
         })
     }
 
-    Item.findOne({ _id: req.params.id }, (err, item) => {
+    Item.findOne({ _id: body.id }, (err, item) => {
         if (err) {
             return res.status(404).json({
                 err,
                 message: 'Item not found!',
             })
         }
-        item.active = body.active
-        item.dateEnd = body.dateEnd
-        item.actualPrice = body.actualPrice
-        item.bidderAddress = body.bidderAddress
+        item.possAddress = body.address
         item
             .save()
             .then(() => {
@@ -72,8 +75,8 @@ updateItem = async (req, res) => {
     })
 }
 
-deleteItem = async (req, res) => {
-    await Item.findOneAndDelete({ _id: req.params.id }, (err, item) => {
+deleteItem = (req, res) => {
+    Item.findOneAndDelete({ _id: req.body.id }, (err, item) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -88,23 +91,9 @@ deleteItem = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getItemById = async (req, res) => {
-    await Item.findOne({ _id: req.params.id }, (err, item) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
 
-        if (!item) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Item not found` })
-        }
-        return res.status(200).json({ success: true, data: item })
-    }).catch(err => console.log(err))
-}
-
-getItems = async (req, res) => {
-    await Item.find({}, (err, items) => {
+getItems = (req, res) => {
+    Item.find({}, (err, items) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -121,6 +110,5 @@ module.exports = {
     createItem,
     updateItem,
     deleteItem,
-    getItems,
-    getItemById,
+    getItems
 }

@@ -43,27 +43,61 @@ exports.login = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
-// exports.update = (req, res, next) => {
+exports.delete = (req, res, next) => {
+  User.findOneAndDelete({ address: req.body.address }, (err, user) => {
+    if (err) {
+        return res.status(400).json({ success: false, error: err })
+    }
 
-// }
+    if (!user) {
+        return res
+            .status(404)
+            .json({ success: false, error: `User not found` })
+    }
 
-// /// Trouver comment sécuriser TODO : verifier avec l'userId 
-// exports.delete = (req, res, next) => {
-//   User.findOneAndDelete({ address: req.body.address }, (err, user) => {
-//     if (err) {
-//         return res.status(400).json({ success: false, error: err })
-//     }
-
-//     if (!user) {
-//         return res
-//             .status(404)
-//             .json({ success: false, error: `User not found` })
-//     }
-
-//     return res.status(200).json({ success: true, data: user })
-//   }).catch(err => console.log(err))
+    return res.status(200).json({ success: true, data: user })
+  }).catch(err => console.log(err))
   
-// };
+};
+
+exports.update = (req, res, next) => {
+  const body = req.body
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+
+    User.findOne({ address: body.address }, (err, user) => {
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'User not found!',
+            })
+        }
+        user.actualBalance = body.actualBalance
+        user.totalBalance = body.totalBalance
+        user
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    message: 'User updated!',
+                })
+            })
+            .catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: 'User not updated!',
+                })
+            })
+    })
+
+    
+  
+};
 
 exports.getAll = (req, res, next) => {
   User.find({})

@@ -1,32 +1,39 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const uniqueValidator = require ('mongoose-unique-validator')
 
-const bidSchema = new Schema(
+const bidSchema = new mongoose.Schema(
     {
-        image: { type: 
-            String, 
+        idItem: {
+            type: String, 
+            required: true,
+            unique: true
+        },
+        active: { 
+            type: Boolean, 
+            required: true,
+            default: true 
+        },
+        dateEnd: { 
+            type: Date, 
             required: true
         },
-        possAddress: { 
-            type: String, 
+        actualPrice: { 
+            type: Number, 
             required: true
+        },
+        bidderAddress: { 
+            type: String, 
+            required: true,
         },
         creatorAddress: { 
             type: String, 
-            required: true
+            required: true,
         },
-        comment: { 
-            type: String
-        },
-        createdTimestamp: { 
-            type: Date, 
-            default: Date.now, 
-            required: true
-        },
-
-    },
-    { timestamps: true },
+        
+    }
 )
+
+bidSchema.plugin(uniqueValidator)
 
 module.exports = mongoose.model('bid', bidSchema)
 

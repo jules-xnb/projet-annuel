@@ -1,35 +1,30 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
 const uniqueValidator = require ('mongoose-unique-validator')
 
-const itemSchema = new Schema(
+const itemSchema = new mongoose.Schema(
     {
-        id: {
-            type: Number,
+        image: { type: 
+            String, 
             required: true,
             unique: true
         },
-        active: { 
-            type: Boolean, 
-            required: true
-        },
-        dateEnd: { 
-            type: Date, 
-            required: true
-        },
-        actualPrice: { 
-            type: Number, 
-            required: true
-        },
-        bidderAddress: { 
+        possAddress: { 
             type: String, 
             required: true
         },
-        
-    },
-    { timestamps: true },
+        creatorAddress: { 
+            type: String, 
+            required: true
+        },
+        comment: { 
+            type: String
+        },
+        createdTimestamp: { 
+            type: Date, 
+            default: Date.now
+        },
+    }
 )
-
 itemSchema.plugin(uniqueValidator)
 
 module.exports = mongoose.model('item', itemSchema)
