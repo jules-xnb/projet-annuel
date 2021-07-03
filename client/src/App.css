@@ -1,0 +1,183 @@
+.App {
+  text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+div.menubar{
+  display: flex;
+  min-height: 64px;
+}
+
+div.firstBlock{
+  flex:2;
+  display: flex;
+}
+
+div.itemmenu{
+  flex:1;
+  font-size: medium;
+}
+
+/* div.itemmenu.home{
+  padding: 1.5em 0;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+div.itemmenu.second{
+  padding: 1.5em 0;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+div.itemmenu.third{
+  
+} */
+
+div.itemmenu{
+  background-color: #1b1e24;
+  padding: 1.5em 0;
+  cursor: pointer;
+}
+
+div.itemmenu button{
+  background-color: #1b1e24;
+  color: #ffffff;
+}
+
+div.itemmenu button{
+  height: 100%;
+  width: 100%;
+  display: inline-block;
+  border: 0;
+  cursor: pointer;
+  vertical-align: middle;
+  overflow: hidden;
+  text-decoration: none;
+  text-align: center;
+}
+
+div.middleblock{
+  flex:6;
+  background-color: #1b1e24;
+}
+
+div.itemlast{
+  flex: 1;
+  padding: 1em 0;
+}
+
+div.connect{
+  background-color: #1b1e24;
+}
+
+
+div button.button{
+  font-size: 17px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  display: inline-block;
+  padding: 8px 16px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+  background-color: #04AA6D;
+  color: #ffffff;
+  border-color: #04AA6D;
+  margin: 0 1em;
+}
+
+div.canvas{
+  color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+div.background{
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+  opacity: 50%;  
+}
+
+div.form{
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  height: 60%;
+  width: 40%;
+  
+  background-color: #393f4b;
+
+}
+
+div.titles{
+  width: 100%;
+  /* background-color: yellowgreen; */
+  display: flex;
+  /* height: 5em; */
+}
+
+div.itemtitles{
+  flex: 1;
+  padding: 1.2em 0 1.2em 0;
+  background-color: rgb(54, 54, 54);
+  color: white;
+  cursor: pointer;
+  font-size:large;
+}
+
+div.itemtitles:active{
+  background-color: rgb(75, 75, 75);
+}
+
+div.forms{
+  padding: 2em;
+}
+
+button{
+  cursor: pointer;
+}
+
+button.connectMetaMask{
+  margin: 2em 0;
+}
