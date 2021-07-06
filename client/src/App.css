@@ -2,6 +2,7 @@
   text-align: center;
   background-color: #282c34;
   min-height: 100vh;
+  color: white;
 }
 
 .App-logo {
@@ -38,7 +39,7 @@
   }
 }
 
-div.menubar{
+div.BarMenu{
   display: flex;
   min-height: 64px;
 }
@@ -75,12 +76,9 @@ div.itemmenu{
   cursor: pointer;
 }
 
-div.itemmenu button{
+div.itemmenu > {
   background-color: #1b1e24;
   color: #ffffff;
-}
-
-div.itemmenu button{
   height: 100%;
   width: 100%;
   display: inline-block;

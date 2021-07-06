@@ -1,27 +1,55 @@
 import React from 'react'
-import Connection from './Connection';
+// import Account from '../Pages/Account';
+// import Bids from '../Pages/Bids';
+// import HomePage from '../Home page/HomePage';
+// import { BrowserRouter, Route} from 'react-router-dom';
 
-const MenuBar = () => {
+class MenuBar extends React.Component {
 
+  state = {
+    displayAccount : true,
+    displayHomePage : true,
+    displayBid : true
+  }
+
+  changeDisplayAcc = () => {
+    this.props.dispAcc(this.state.displayAccount)
+  }
+
+  changeDisplayHP = () => {
+    this.props.dispHP(this.state.displayHomePage)
+  }
+
+  changeDisplayBid = () => {
+    this.props.dispBid(this.state.displayBid)
+  }
+  
+
+  render(){
     return (
-        <div className="menubar">
-            <div className="firstBlock">
-              <div className="itemmenu home">
-                  <button>💰</button>
-                </div>
+          <div className="firstBlock">
+            <div className="itemmenu home">
+                <button onClick={() => {
+                  // this.changeDisplayHP(),
+                  console.log(this.state.displayHomePage)
+                  }}>💰</button>
+              </div>
 
-              <div className="itemmenu second">
-                  <button>test2</button>
-                </div>
+            <div className="itemmenu second">
+                <button onClick={() => 
+                  // this.changeDisplayAcc(),
+                  console.log(this.state.displayHomePage)}>Account</button>
+              </div>
 
-              <div className="itemmenu third">
-                  <button>test3</button>
-                </div>
-            </div>
-            <div className="middleblock"></div>
-            <Connection/>
-        </div>
-    );
+            <div className="itemmenu third">
+                <button onClick={() => 
+                // this.changeDisplayBid(),
+                console.log(this.state.displayHomePage)}>Bids</button>
+              </div>
+          </div>
+          
+    )
+  }
 }
 
 export default MenuBar;
