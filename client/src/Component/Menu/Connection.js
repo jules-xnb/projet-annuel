@@ -3,31 +3,20 @@ import React from 'react'
 
 class Connection extends React.Component {
 
-    // constructor(props){
-    //     super(props);
-        // this.
+
         state = {
             showCanvas : false,
             title : "Connexion",
             passwd : "password"
-            // display : this.state.showCanvas ? 'block' : 'none'
         }
-    // }
-    // const [showCanvas,setShowCanvas] = useState(false);
-    // const [title,setTitle] = useState("Connexion");
-    // const [passwd,setPasswd] = useState("password");
 
-    // let styleConnection = {
-    //     display: showCanvas ? 'block' : 'none'
-    // }
-
-    // const contextPsswdValue = {
-    //     passwd,
-    //     setPasswd
-    // };
 
     handleConnect = () => {
         this.props.callbackFunct(this.state.passwd)
+    }
+
+    loadWeb3 = () =>{
+
     }
     
 
@@ -51,6 +40,7 @@ class Connection extends React.Component {
                             <label for="password" onChange={(e) => this.setState({password : e.target.value})}>Mot de passe : </label>
                             <input type="text" className="password" onChange={(e) => this.setState({passwd : e.target.value})}/>
                             <input type="button" value="Submit" onClick={() => this.handleConnect()}/>
+                            {/* <button className="connectMetaMask" onClick ="loadWeb3()">Connexion avec metamask</button> */}
                         </div>
                     </div>
                 </div>

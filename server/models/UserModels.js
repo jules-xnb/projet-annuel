@@ -10,9 +10,30 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String, 
         required: true
+    },
+    actualBalance: { 
+        type: Number, 
+        required: true
+    },
+    totalBalance: { 
+        type: Number, 
+        required: true
     }
 })
 
 userSchema.plugin(uniqueValidator)
 
-module.exports = mongoose.model('mytable', userSchema)
+module.exports = mongoose.model('user', userSchema) 
+
+
+
+
+
+
+
+
+
+
+
+
+

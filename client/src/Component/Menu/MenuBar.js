@@ -4,6 +4,7 @@ import React from 'react'
 // import HomePage from '../Home page/HomePage';
 // import { BrowserRouter, Route} from 'react-router-dom';
 
+
 class MenuBar extends React.Component {
 
   state = {
@@ -17,7 +18,7 @@ class MenuBar extends React.Component {
   }
 
   changeDisplayHP = () => {
-    this.props.dispHP(this.state.displayHomePage)
+    this.props.displayHP(this.state.displayHomePage)
   }
 
   changeDisplayBid = () => {
@@ -30,21 +31,23 @@ class MenuBar extends React.Component {
           <div className="firstBlock">
             <div className="itemmenu home">
                 <button onClick={() => {
-                  // this.changeDisplayHP(),
-                  console.log(this.state.displayHomePage)
+                  this.state.displayHomePage ? this.setState({displayHomePage: false}) : this.setState({displayHomePage: true})
+                  console.log('this'+this.state.displayHomePage)
                   }}>💰</button>
               </div>
 
             <div className="itemmenu second">
-                <button onClick={() => 
-                  // this.changeDisplayAcc(),
-                  console.log(this.state.displayHomePage)}>Account</button>
+                <button onClick={() =>{
+                  this.state.displayAccount ? this.setState({displayAccount: false}) : this.setState({displayAccount: true})
+                  console.log('this'+this.state.displayAccount)
+                }}>Account</button>
               </div>
 
             <div className="itemmenu third">
-                <button onClick={() => 
-                // this.changeDisplayBid(),
-                console.log(this.state.displayHomePage)}>Bids</button>
+                <button onClick={() => {
+                this.state.displayBid ? this.setState({displayBid: false}) : this.setState({displayBid: true})
+                console.log('this'+this.state.displayBid)
+                }}>Bids</button>
               </div>
           </div>
           
