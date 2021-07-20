@@ -3,8 +3,13 @@ import React from 'react'
 class Account extends React.Component{
     render(){
         return (
-            <div style={{display : this.props.disp ? 'block' : 'none', backgroundColor : "red"}}>
-                Account page
+            <div className="componentAccount" style={{display : this.props.disp ? 'block' : 'none', backgroundColor : "red"}}>
+                <div className="wrapAccount">
+                    <h1>Votre compte</h1>
+                    <div className="accountItem address">Votre adresse : {this.props.address}</div>
+                    <div className="accountItem actualBalance">Votre balance actuelle : {this.props.actualBalance}</div>
+                    <div className="accountItem totalBalance">Votre balance total : {this.props.totalBalance}</div>
+                </div>
             </div>
         );
     }

@@ -1,8 +1,5 @@
 import React from 'react'
-// import Account from '../Pages/Account';
-// import Bids from '../Pages/Bids';
-// import HomePage from '../Home page/HomePage';
-// import { BrowserRouter, Route} from 'react-router-dom';
+
 
 
 class MenuBar extends React.Component {

@@ -3,15 +3,13 @@ import React from 'react'
 
 class HomePage extends React.Component {
 
-    state = {
-        displ : this.props.disp
-    }
-
     render(){
         return (
-            <div style={{display : this.state.displ ? 'block' : 'none', backgroundColor : "blue"}}>
+            <div className="componentHP" style={{display : this.props.disp ? 'block' : 'none', backgroundColor : "blue"}}>
                 {/* <p style={{color:"white"}}>{contextPsswdValue.passwd}</p> */}
-                test
+                <h1>[nom à définir]</h1>
+                <div>Le premier site d'enchère entièrement offchain.</div>
+                <div>Connectez vous pour participer à de nombreuses enchères.</div>
             </div>
         );
     }

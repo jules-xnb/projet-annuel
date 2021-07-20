@@ -3,7 +3,6 @@ import React from 'react'
 
 class Connection extends React.Component {
 
-
         state = {
             showCanvas : false,
             title : "Connexion",
