@@ -1,8 +1,6 @@
 import React from 'react'
 import './App.css';
-import MenuBar from "./Component/Menu/MenuBar";
 import HomePage from './Component/Home page/HomePage';
-// import Connection from './Component/Menu/Connection';
 import Bids from './Component/Pages/Bids'
 import Account from './Component/Pages/Account'
 import Web3 from 'web3'
@@ -14,9 +12,10 @@ class App extends React.Component {
 
   state = {
     mess:'mot de passe',
-    displaycdAcc : true,
-    displayBids : true,
+    displayAcc : true,
     displayHP : true,
+    displayBids : true,
+
     showCanvas : false,
 
     title : "Connexion",
@@ -26,7 +25,10 @@ class App extends React.Component {
     userAddress: null, 
     userToken: null, 
     contract : null, 
-    
+ 
+
+    actualBalance: 0,
+    totalBalance: 0,
 
     messageInscription : null, 
   }
@@ -34,27 +36,8 @@ class App extends React.Component {
   web3 = new Web3(window.ethereum)
 
 
-  // handleConnect = (childData) => {
-  //   this.setState({mess:childData})
-  //   // console.log(mess)
-  // }
-
-
-
-  changeDisplayAcc = (Acc) => {
-    this.setState({displayAcc:Acc})
-    console.log('app this: '+this.state.displayAcc)
-  }
-
-  changeDisplayHP = (HP) => {
-    this.setState({displayHP:HP})
-    console.log('app this: '+this.state.displayHP)
-  }
-
-  changeDisplayBid = (Bid) => {
-    this.setState({displayBids:Bid})
-    console.log('app this: '+this.state.displayBids)
-  }
+  // ############################################ Connexion MetaMask ############################################
+       
 
   loadWeb3 = async () =>{
     if (window.ethereum) {
@@ -70,12 +53,19 @@ class App extends React.Component {
     //console.log('connection metamask')
   }
 
+
+  // ############################################ Connexion / Inscription ############################################
+
   connect = async () => {
     if (this.state.passwd && this.state.userAddress){
       if (this.state.title === "Inscription"){
           const req = {
             address : this.state.userAddress,
-            password : this.state.passwd
+
+            password : this.state.passwd,
+            actualBalance : this.state.actualBalance,
+            totalBalance : this.state.totalBalance
+
           };
           const res = await axios.post('http://localhost:4000/user/signup', req);
           if (res.status === 201){
@@ -84,7 +74,10 @@ class App extends React.Component {
       } else {
           const req = {
             address : this.state.userAddress,
-            password : this.state.passwd
+            password : this.state.passwd,
+            actualBalance : this.state.actualBalance,
+            totalBalance : this.state.totalBalance
+
           };
           const res = await axios.post('http://localhost:4000/user/login', req)
           if (res.status === 200){
@@ -97,19 +90,53 @@ class App extends React.Component {
     }
   }
 
+  connectBids = async () => {
+        const req = {
+        address : this.state.userAddress,
+        password : this.state.passwd,
+        actualBalance : this.state.actualBalance,
+        totalBalance : this.state.totalBalance
+      };
+      const res = await axios.get('http://localhost:4000/bid/getBids', req)
+      // if (res.status === 200){
+      //   this.setState({userToken: res.data.token, messageInscription: "Connexion réussie"})
+      //   console.log(this.state.userToken)
+      // }
+  }
+
+
   render(){
     return (
       <div className="App">
-        <div className="BarMenu">
-          <MenuBar
-            dispAcc={this.changeDisplayAcc}
-            dispHP={this.changeDisplayHP}
-            dispBid={this.changeDisplayBid}
-          />
+
+        {/* ############################################ Boutton MenuBar ############################################ */}
+       
+       <div className="BarMenu">
+        <div className="firstBlock">
+            <div className="itemmenu home">
+                <button onClick={() => {
+                  this.state.displayHP ? this.setState({displayHP: false}) : this.setState({displayHP: true})
+                  }}>💰</button>
+              </div>
+
+            <div className="itemmenu second">
+                <button onClick={() =>{
+                  this.state.displayAcc ? this.setState({displayAcc: false}) : this.setState({displayAcc: true})
+                }}>Account</button>
+              </div>
+
+            <div className="itemmenu third">
+                <button onClick={() => {
+                this.state.displayBids ? this.setState({displayBids: false}) : this.setState({displayBids: true})
+                }}>Bids</button>
+              </div>
+          </div>
 
           <div className="middleblock"></div>
+
+          {/* ############################################ Boutton connexion ############################################ */}
+          
           <div className="connect">
-                {/* <PasswdContext.Provider value={contextPsswdValue}> */}
                 <div className="itemlast connection">
                         <button className="button connexion" onClick={() => this.setState({showCanvas : true})}>Connexion</button>
                 </div>
@@ -132,13 +159,29 @@ class App extends React.Component {
                         </div>
                     </div>
                 </div>
-                {/* </PasswdContext.Provider> */}
             </div>
         </div>
-        {this.state.passwd}
+
+        {/* ############################################ Blocks Main Page ############################################ */}
+        
         <HomePage disp = {this.state.displayHP}/>
-        <Account disp = {this.state.displayAcc}/>
-        <Bids disp = {this.state.displayBids}/>
+        <Account 
+          disp = {this.state.displayAcc}
+          address = {this.state.userAddress}
+          actualBalance = {this.state.actualBalance}
+          totalBalance = {this.state.totalBalance}
+        />
+        <div className="componentBid" style={{display : this.state.displayBids ? 'block' : 'none', backgroundColor : "green"}}>
+          <div className="divBidFlex">
+            <h1>Les enchères</h1>
+            <div></div>
+            <button>🔄 Relaod</button>
+          </div>
+          <Bids 
+            disp = {this.state.displayBids}
+          />
+
+        </div>
       </div>
     );
   }
