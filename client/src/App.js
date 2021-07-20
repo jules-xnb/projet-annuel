@@ -22,11 +22,10 @@ class App extends React.Component {
     passwd : "password", 
 
     addressContract: "0x939E52397527b709193B7Eb3A7E249f9803C60dE", 
-    userAddress: null,
-    userToken: null,
-    contract : null,
-
-    // idItem
+    userAddress: null, 
+    userToken: null, 
+    contract : null, 
+ 
 
     actualBalance: 0,
     totalBalance: 0,
@@ -54,16 +53,19 @@ class App extends React.Component {
     //console.log('connection metamask')
   }
 
+
   // ############################################ Connexion / Inscription ############################################
-       
+
   connect = async () => {
     if (this.state.passwd && this.state.userAddress){
       if (this.state.title === "Inscription"){
           const req = {
             address : this.state.userAddress,
+
             password : this.state.passwd,
             actualBalance : this.state.actualBalance,
             totalBalance : this.state.totalBalance
+
           };
           const res = await axios.post('http://localhost:4000/user/signup', req);
           if (res.status === 201){
@@ -75,6 +77,7 @@ class App extends React.Component {
             password : this.state.passwd,
             actualBalance : this.state.actualBalance,
             totalBalance : this.state.totalBalance
+
           };
           const res = await axios.post('http://localhost:4000/user/login', req)
           if (res.status === 200){
@@ -100,6 +103,7 @@ class App extends React.Component {
       //   console.log(this.state.userToken)
       // }
   }
+
 
   render(){
     return (
