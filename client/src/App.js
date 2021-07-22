@@ -32,6 +32,7 @@ class App extends React.Component {
 
     actualBalance: 0,
     totalBalance: 0,
+    tokenWallet: 0, 
     amountDepositWithdraw: 0, 
     resDepositWithdraw: null, 
     resDepositWithdraw2: null,
@@ -40,7 +41,6 @@ class App extends React.Component {
 
     buttonInscription : "Inscription/Connexion",
     messageInscription : null, 
-
 
   }
 
@@ -58,9 +58,11 @@ class App extends React.Component {
           })
       let newcontract = await new this.web3.eth.Contract(abi, this.state.addressContract)
       this.setState({contract: newcontract})
-      //console.log(this.state.userAddress)
+      let res = await newcontract.methods.balanceOf(this.state.userAddress).call() 
+      this.setState({ tokenWallet : res })
+      
     }
-    //console.log('connection metamask')
+    
   }
 
 
@@ -166,9 +168,11 @@ class App extends React.Component {
           actualBalance : ac, 
           totalBalance : tb,
         })
-        this.setState({ resDepositWithdraw4 : "Balances mises à jour" })
+        
       })
-      
+      let res3 = await this.state.contract.methods.balanceOf(this.state.userAddress).call() 
+      this.setState({ tokenWallet : res3 })
+      this.setState({ resDepositWithdraw4 : "Balances mises à jour" })
     } else {
       this.setState({ resDepositWithdraw1 : "Vous n'êtes pas connecté ou montant incorrect" })
     }
@@ -224,9 +228,10 @@ class App extends React.Component {
         actualBalance : ac, 
         totalBalance : tb,
       })
-      this.setState({ resDepositWithdraw4 : "Balances mises à jour" })
     })
-
+    let res3 = await this.state.contract.methods.balanceOf(this.state.userAddress).call() 
+    this.setState({ tokenWallet : res3 })
+    this.setState({ resDepositWithdraw4 : "Balances mises à jour" })
     } else {
       this.setState({ resDepositWithdraw1 : "Vous n'êtes pas connecté ou montant incorrect" })
     }
@@ -312,6 +317,7 @@ class App extends React.Component {
           address = {this.state.userAddress}
           actualBalance = {this.state.actualBalance}
           totalBalance = {this.state.totalBalance}
+          tokenWallet = {this.state.tokenWallet}
         />
         <input type="text" onChange={e => this.setState({ amountDepositWithdraw: e.target.value })}/>
         <button onClick={()=> this.deposit()}>Deposit</button>
