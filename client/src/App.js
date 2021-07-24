@@ -42,6 +42,9 @@ class App extends React.Component {
     buttonInscription : "Inscription/Connexion",
     messageInscription : null, 
 
+    imageItem : "test", 
+    commentItem : "test", 
+
   }
 
   web3 = new Web3(window.ethereum)
@@ -64,7 +67,6 @@ class App extends React.Component {
     }
     
   }
-
 
   // ############################################ Connexion / Inscription ############################################
 
@@ -112,6 +114,8 @@ class App extends React.Component {
       this.setState({messageInscription: "Connexion à Metamask et mot de passe requis"})
     }
   }
+
+   // ############################################ Deposit / Withdraw ############################################
 
   deposit = async () => {
     this.setState({ 
@@ -185,6 +189,7 @@ class App extends React.Component {
       resDepositWithdraw3 : null,
       resDepositWithdraw4 : null,
     })
+
     if (this.state.userAddress && this.state.userToken 
       && this.state.amountDepositWithdraw > 0 && this.state.amountDepositWithdraw <= this.state.actualBalance ){
         this.setState({ resDepositWithdraw2 : "Demande de retrait en cours de traitement" })
@@ -250,7 +255,6 @@ class App extends React.Component {
       //   console.log(this.state.userToken)
       // }
   }
-
 
   render(){
     return (
@@ -339,6 +343,165 @@ class App extends React.Component {
       </div>
     );
   }
+
+  createItem = async () => {
+    if (this.state.userAddress && this.state.userToken && this.state.imageItem && this.state.commentItem){ 
+      let data = JSON.stringify({
+        "image" :  this.state.imageItem,
+        "address" : this.state.userAddress,
+        "comment" : this.state.commentItem,
+      })
+  
+      let config = {
+        method: 'post',
+        url: 'http://localhost:4000/item/create',
+        headers: { 
+          'Authorization': 'Bearer ' + this.state.userToken, 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+  
+      axios(config)
+      .then(() => {
+        // Ce que tu veux que ca fasse en retour
+      })
+    }
+  }
+
+  getItemsByAddress = async () => {
+    if (this.state.userAddress && this.state.userToken ){ 
+  
+      axios.post("http://localhost:4000/item/items", { address: this.state.userAddress })
+      .then( res => {
+        console.log(res)
+        // Ce que tu veux que ca fasse en retour
+      })
+    }
+  }
+
+  deleteItem = async () => {
+    if (this.state.userAddress && this.state.userToken ){ 
+      let data = JSON.stringify({
+        "id" :  "60fb310cfba5196b4a3a952a" // La variable id de l'item à supprimer
+      })
+  
+      let config = {
+        method: 'delete',
+        url: 'http://localhost:4000/item/delete',
+        headers: { 
+          'Authorization': 'Bearer ' + this.state.userToken, 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+  
+      axios(config)
+      .then(res => {
+        console.log(res)
+        // Ce que tu veux que ca fasse en retour
+      })
+    }
+  }
+
+  createBid = async () => {
+    if (this.state.userAddress && this.state.userToken){ 
+      // Vérification qu'une enchère n'est pas déja présente pour un item 
+      let idItem = "60fb392a970d0e0d01eb9f9f" // a changer par la varibale de l'id de l'item 
+      axios.post("http://localhost:4000/bid/bidsItem", { id : idItem })
+      .then( res => {
+        if (res.status === 200){
+          // enchere déja présente pour cet item, impossible de créer une deuxième OU item id item incorrect 
+          console.log("enchère déja présente pout cet item ou id item incorrect")
+        } else {
+          let data = JSON.stringify({
+            "idItem" :  idItem, 
+            "dateEnd" : "2021-12-12", // a changer par la variable date end 
+            "actualPrice" : 150, // a changer par la variable prix
+            "creatorAddress" : this.state.userAddress,
+          })
+      
+          let config = {
+            method: 'post',
+            url: 'http://localhost:4000/bid/create',
+            headers: { 
+              'Authorization': 'Bearer ' + this.state.userToken, 
+              'Content-Type': 'application/json'
+            },
+            data : data
+          };
+      
+          axios(config) 
+          .then(res => { 
+            console.log(res) 
+            // Ce que tu veux que ca fasse en retour 
+          })
+        } 
+      })
+    } 
+  } 
+
+  getAllBids = () => {
+    axios.get("http://localhost:4000/bid/bids")
+    .then(res => {
+      console.log(res)
+      // Ce que tu veux que ca fasse en retour 
+    })
+  }
+
+  deleteBid = () => {
+    if (this.state.userAddress && this.state.userToken){ 
+      let data = JSON.stringify({
+        "id" : "60fb5506adecb778f701af88" // A remplacer par une variable
+      })
+
+      let config = {
+        method: 'delete',
+        url: 'http://localhost:4000/bid/delete',
+        headers: { 
+          'Authorization': 'Bearer ' + this.state.userToken, 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+
+      axios(config) 
+      .then(res => { 
+        console.log(res) 
+        // Ce que tu veux que ca fasse en retour 
+      })
+    }
+  }
+
+  updateBid = () => {
+    let actualPriceOfBid = 150 // a remplacer par la variabe qui permet l'affichage de l'enchère 
+    let newprice = 200 // a remplacer par une variable 
+    if (this.state.userAddress && this.state.userToken && newprice > actualPriceOfBid){ 
+      let data = JSON.stringify({
+        "id": "60fb5dcbadecb778f701af9c", // A rempalcer par la variable 
+        "active": true,
+        "actualPrice": newprice,
+        "bidderAddress": this.state.userAddress
+      })
+
+      let config = {
+        method: 'put',
+        url: 'http://localhost:4000/bid/update',
+        headers: { 
+          'Authorization': 'Bearer ' + this.state.userToken, 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+
+      axios(config) 
+      .then(res => { 
+        console.log(res) 
+        // Ce que tu veux que ca fasse en retour 
+      })
+    }
+  }
+
 }
 
 export default App;

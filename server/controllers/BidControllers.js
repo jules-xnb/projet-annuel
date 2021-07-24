@@ -93,6 +93,19 @@ deleteBid = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+getBidsByItem = async (req, res) => {
+    await Bid.find({ idItem : req.body.id }, (err, bids) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        if (!bids.length) {
+            return res
+                .status(201)
+                .json({ success: false, error: `Bid not found` })
+        }
+        return res.status(200).json({ success: true, data: bids })
+    }).catch(err => console.log(err))
+}
 
 getBids = async (req, res) => {
     await Bid.find({}, (err, bids) => {
@@ -101,7 +114,7 @@ getBids = async (req, res) => {
         }
         if (!bids.length) {
             return res
-                .status(404)
+                .status(401)
                 .json({ success: false, error: `Bid not found` })
         }
         return res.status(200).json({ success: true, data: bids })
@@ -112,5 +125,6 @@ module.exports = {
     createBid,
     updateBid,
     deleteBid,
+    getBidsByItem, 
     getBids
 }
