@@ -47,6 +47,7 @@ class App extends React.Component {
     imageItem : "test", 
     commentItem : "test", 
 
+
     allBids: [],
 
     idBidUpdate:'60fb5dcbadecb778f701af9c',
@@ -116,6 +117,7 @@ class App extends React.Component {
                   actualBalance : res2.data[0].actualBalance, 
                   totalBalance : res2.data[0].totalBalance,
                   connected: true
+
                 })
               })
           })
@@ -332,6 +334,7 @@ class App extends React.Component {
           <div className="divBidFlex">
             <h1>Les enchères</h1>
             <div></div>
+
             <button onClick={() => this.getAllBids()}>🔄 Reload</button>
           </div>
           {this.state.allBids.map((e) =>
@@ -370,6 +373,11 @@ class App extends React.Component {
               >Enchérir</button>
             </div>
           )}
+            <button>🔄 Reload</button>
+          </div>
+          <Bids 
+            disp = {this.state.displayBids}
+          />
         </div>
       </div>
     );
@@ -478,6 +486,7 @@ class App extends React.Component {
       this.setState({allBids : res.data.data})
       console.log("res: ",res)
       console.log("allBids: ",this.state.allBids)
+
       // Ce que tu veux que ca fasse en retour 
     })
   }
@@ -507,11 +516,13 @@ class App extends React.Component {
   }
 
   updateBid = () => {
+
     let actualPriceOfBid = this.state.oldPrice
     let newprice = this.state.newPrice
     if (this.state.userAddress && this.state.userToken && newprice > actualPriceOfBid){ 
       let data = JSON.stringify({
         "id": this.state.idBidUpdate,
+
         "active": true,
         "actualPrice": newprice,
         "bidderAddress": this.state.userAddress
@@ -531,6 +542,7 @@ class App extends React.Component {
       .then(res => { 
         console.log(res)
         console.log("updated")
+
         // Ce que tu veux que ca fasse en retour 
       })
     }
