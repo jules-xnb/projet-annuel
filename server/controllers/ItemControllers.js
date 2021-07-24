@@ -93,7 +93,7 @@ deleteItem = (req, res) => {
 
 
 getItems = (req, res) => {
-    Item.find({}, (err, items) => {
+    Item.find({ possAddress : req.body.address }, (err, items) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
