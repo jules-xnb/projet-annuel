@@ -10,6 +10,8 @@ import axios from 'axios'
 
 class App extends React.Component {
 
+  
+
   state = {
     mess:'mot de passe',
     displayAcc : true,
@@ -44,6 +46,15 @@ class App extends React.Component {
 
     imageItem : "test", 
     commentItem : "test", 
+
+
+    allBids: [],
+
+    idBidUpdate:'60fb5dcbadecb778f701af9c',
+    oldPrice:250,
+    newPrice:350,
+
+    connected: false
 
   }
 
@@ -105,6 +116,8 @@ class App extends React.Component {
                 this.setState({
                   actualBalance : res2.data[0].actualBalance, 
                   totalBalance : res2.data[0].totalBalance,
+                  connected: true
+
                 })
               })
           })
@@ -242,19 +255,6 @@ class App extends React.Component {
     }
   }
 
-  connectBids = async () => {
-        const req = {
-        address : this.state.userAddress,
-        password : this.state.passwd,
-        actualBalance : this.state.actualBalance,
-        totalBalance : this.state.totalBalance
-      };
-      await axios.get('http://localhost:4000/bid/bids', req)
-      // if (res.status === 200){
-      //   this.setState({userToken: res.data.token, messageInscription: "Connexion réussie"})
-      //   console.log(this.state.userToken)
-      // }
-  }
 
   render(){
     return (
@@ -334,6 +334,45 @@ class App extends React.Component {
           <div className="divBidFlex">
             <h1>Les enchères</h1>
             <div></div>
+
+            <button onClick={() => this.getAllBids()}>🔄 Reload</button>
+          </div>
+          {this.state.allBids.map((e) =>
+            <div>
+              <Bids 
+                disp = {this.state.displayBids}
+                idItem = {e._id}
+                dateEnd = {e.dateEnd}
+                actualPrice = {e.actualPrice}
+                bidderAddress = {e.bidderAddress}
+                creatorAddress = {e.creatorAddress}
+              />
+              <input 
+                type="number" 
+                placeholder="Le montant" 
+              //   onChange={eve => console.log('yesy'),
+              //   this.setState({
+              //     newPrice: value,
+              //     oldPrice: e.actualPrice,
+              //     idBidUpdate: e._id
+              //   }),
+              //   console.log("oldprice: ",this.state.oldPrice, "newprice: ",this.state.newPrice, "idBidUpdate: ",this.state.idBidUpdate, "_id: ",e._id)
+              // }
+                
+              />
+              
+              <button 
+              onClick={() => 
+              // this.setState({
+              //     oldPrice: e.actualPrice,
+              //     idBidUpdate: e._id
+              //   }),
+              //   console.log("oldprice: ",this.state.oldPrice, "newprice: ",this.state.newPrice, "idBidUpdate: ",this.state.idBidUpdate, "_id: ",e._id)
+                this.updateBid()
+              }
+              >Enchérir</button>
+            </div>
+          )}
             <button>🔄 Reload</button>
           </div>
           <Bids 
@@ -444,7 +483,10 @@ class App extends React.Component {
   getAllBids = () => {
     axios.get("http://localhost:4000/bid/bids")
     .then(res => {
-      console.log(res)
+      this.setState({allBids : res.data.data})
+      console.log("res: ",res)
+      console.log("allBids: ",this.state.allBids)
+
       // Ce que tu veux que ca fasse en retour 
     })
   }
@@ -474,11 +516,13 @@ class App extends React.Component {
   }
 
   updateBid = () => {
-    let actualPriceOfBid = 150 // a remplacer par la variabe qui permet l'affichage de l'enchère 
-    let newprice = 200 // a remplacer par une variable 
+
+    let actualPriceOfBid = this.state.oldPrice
+    let newprice = this.state.newPrice
     if (this.state.userAddress && this.state.userToken && newprice > actualPriceOfBid){ 
       let data = JSON.stringify({
-        "id": "60fb5dcbadecb778f701af9c", // A rempalcer par la variable 
+        "id": this.state.idBidUpdate,
+
         "active": true,
         "actualPrice": newprice,
         "bidderAddress": this.state.userAddress
@@ -496,7 +540,9 @@ class App extends React.Component {
 
       axios(config) 
       .then(res => { 
-        console.log(res) 
+        console.log(res)
+        console.log("updated")
+
         // Ce que tu veux que ca fasse en retour 
       })
     }
@@ -505,8 +551,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-
-
-
-
