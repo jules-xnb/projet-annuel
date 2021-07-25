@@ -5,6 +5,7 @@ const userCtrl = require('../controllers/UserControllers');
 const auth = require('../middleware/auth');
 
 router.get('/users', userCtrl.getAll);
+router.post('/user', userCtrl.getByAddress);
 router.post('/signup', userCtrl.signup);
 router.post('/login', userCtrl.login);
 router.put('/update', auth, userCtrl.update);
