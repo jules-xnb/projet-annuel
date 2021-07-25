@@ -37,7 +37,7 @@ class Connection extends React.Component {
                         <div className="forms">
                             <h1>{this.state.title}</h1>
                             <label for="password" onChange={(e) => this.setState({password : e.target.value})}>Mot de passe : </label>
-                            <input type="text" className="password" onChange={(e) => this.setState({passwd : e.target.value})}/>
+                            <input type="password" className="password" onChange={(e) => this.setState({passwd : e.target.value})}/>
                             <input type="button" value="Submit" onClick={() => this.handleConnect()}/>
                             {/* <button className="connectMetaMask" onClick ="loadWeb3()">Connexion avec metamask</button> */}
                         </div>

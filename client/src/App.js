@@ -6,19 +6,23 @@ import Account from './Component/Pages/Account'
 import Web3 from 'web3'
 import { abi } from './ABI/abi'
 import axios from 'axios'
+import Items from './Component/Pages/Items';
+import {createItem, deleteItem, formCreateItem} from './Functions/ItemFunc'
+import {createBid, deleteBid, updateBid} from './Functions/BidFunc'
 
 
 class App extends React.Component {
-
-  
 
   state = {
     mess:'mot de passe',
     displayAcc : true,
     displayHP : true,
     displayBids : true,
+    displayItems: true,
 
-    showCanvas : false,
+    showCanvasCo : false,
+    showCanvasNB : false,
+    overflow:"none",
 
     title : "Connexion",
     passwd : "password",
@@ -30,7 +34,6 @@ class App extends React.Component {
     userAddress: null, 
     userToken: null, 
     contract : null, 
- 
 
     actualBalance: 0,
     totalBalance: 0,
@@ -44,15 +47,17 @@ class App extends React.Component {
     buttonInscription : "Inscription/Connexion",
     messageInscription : null, 
 
-    imageItem : "test", 
-    commentItem : "test", 
+    imageItem : "test", // ?
+    commentItem : "test", // ?
 
 
     allBids: [],
+    allItems: [],
 
-    idBidUpdate:'60fb5dcbadecb778f701af9c',
-    oldPrice:250,
-    newPrice:350,
+    newPrice:0,
+
+    dateNewBid: 0,
+    priceNewBid: 0,
 
     connected: false
 
@@ -281,6 +286,11 @@ class App extends React.Component {
                 this.state.displayBids ? this.setState({displayBids: false}) : this.setState({displayBids: true})
                 }}>Bids</button>
               </div>
+          <div className="itemmenu third">
+                <button onClick={() => {
+                this.state.displayItems ? this.setState({displayItems: false}) : this.setState({displayItems: true})
+                }}>Items</button>
+              </div>
           </div>
 
           <div className="middleblock"></div>
@@ -289,17 +299,17 @@ class App extends React.Component {
           
           <div className="connect">
                 <div className="itemlast connection">
-                        <button className="button connexion" onClick={() => this.setState({showCanvas : true})}>{ this.state.buttonInscription }</button>
+                  <button className="button connexion" onClick={() => this.setState({showCanvasCo : true})}>{ this.state.buttonInscription }</button>
                 </div>
-                <div className="canvas" style={{display : this.state.showCanvas ? 'block' : 'none'}}>
-                    <div className="background" onClick={() => this.setState({showCanvas : false})}></div>
+                <div className="canvas" style={{display : this.state.showCanvasCo ? 'block' : 'none'}}>
+                    <div className="background" onClick={() => this.setState({showCanvasCo : false})}></div>
                     <div className="form">
                         <div className="titles">
                             <div className="itemtitles signin" onClick={() => this.setState({title : "Inscription"})}>Inscription</div>
                             <div className="itemtitles login" onClick={() => this.setState({title : "Connexion"})}>Connexion</div>
                         </div>
 
-                        <div className="forms">
+                        <div className="formsCo">
                             <h1>{this.state.title}</h1>
                             <div><button className="connectMetaMask" onClick={() => this.loadWeb3()}>Connexion avec metamask</button></div>
                             <div>{ this.state.userAddress }</div>
@@ -350,26 +360,11 @@ class App extends React.Component {
               <input 
                 type="number" 
                 placeholder="Le montant" 
-              //   onChange={eve => console.log('yesy'),
-              //   this.setState({
-              //     newPrice: value,
-              //     oldPrice: e.actualPrice,
-              //     idBidUpdate: e._id
-              //   }),
-              //   console.log("oldprice: ",this.state.oldPrice, "newprice: ",this.state.newPrice, "idBidUpdate: ",this.state.idBidUpdate, "_id: ",e._id)
-              // }
-                
+                onChange={event => this.setState({newPrice: event.target.value})}
               />
               
               <button 
-              onClick={() => 
-              // this.setState({
-              //     oldPrice: e.actualPrice,
-              //     idBidUpdate: e._id
-              //   }),
-              //   console.log("oldprice: ",this.state.oldPrice, "newprice: ",this.state.newPrice, "idBidUpdate: ",this.state.idBidUpdate, "_id: ",e._id)
-                this.updateBid()
-              }
+              onClick={() => updateBid(this.state.newPrice,e._id,e.actualPrice,this.state.userAddress,this.tokenWallet)}
               >Enchérir</button>
             </div>
           )}
@@ -379,174 +374,100 @@ class App extends React.Component {
             disp = {this.state.displayBids}
           />
         </div>
+
+        <div className="componentItems" style={{display : this.state.displayItems ? 'block' : 'none', backgroundColor : "brown"}}>
+          <div className="divBidFlex">
+            <h1>Tous vos items</h1>
+            <div></div>
+            <button onClick={() => this.getItemsByAddress()}>🔄 Reload</button>
+          </div>
+          {this.state.allItems.map((e) =>
+            <div>
+              <Items
+                disp = {this.state.displayAcc}
+                id = {e._id}
+                image = {e.image}
+                possAddress = {e.possAddress}
+                creatorAddress = {e.creatorAddress}
+                comment = {e.comment}
+                createdTimestamp = {e.createdTimestamp}
+              />
+              <button onClick={() => deleteItem(e._id)}>
+                Supprimer
+              </button>
+              <button onClick={() => this.setState({showCanvasNB: true,  overflow: "hidden"})}>
+                Créer un enchère
+              </button>
+              
+            </div>
+          )}
+
+            <div className="newBid">
+              <div className="canvas" style={{display : this.state.showCanvasNB ? 'block' : 'none'}}>
+                  <div className="background" onClick={() => this.setState({showCanvasNB : false, overflow: "none"})}></div>
+                  <div className="form">
+                    <div className="formsNB">
+                      <h1>Nouvelle enchère</h1>
+
+                      <div className="dateEndDivNB">
+                        <label for='text'>Date de fin de l'enchère : </label>
+                        <input type="number" placeholder="AAAA-MM-JJ" className="formDateEnd" onChange={(e) => this.setState({dateNewBid : e.target.value})}/>
+                      </div>
+
+                      <div className="priceDivNB">
+                        <label for='text'>Price de départ : </label>
+                        <input type="number" placeholder="Prix" className="formPrice" onChange={(e) => this.setState({priceNewBid : e.target.value})}/>
+                      </div>
+
+
+                      <input type="button" value="Submit" onClick={() => 
+                        createBid(this.state.dateEnd,this.state.priceNewBid,this.userAddress, this.tokenWallet),
+                        console.log(this.state.userAddress,this.state.tokenWallet,this.state.dateEnd,this.state.priceNewBid)
+                        }/>
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+          <div className="createItem">
+            <h3>Créer un item</h3>
+            <input type="text" placeholder="image" className="inputImageCI"/>
+            <input type="text" placeholder="comment" className="inputCommentCI"/>
+            <button onClick={formCreateItem(this.state.userAddress, this.state.tokenWallet)}>Créer</button>
+          </div>
+        </div>
+      
       </div>
     );
   }
 
-  createItem = async () => {
-    if (this.state.userAddress && this.state.userToken && this.state.imageItem && this.state.commentItem){ 
-      let data = JSON.stringify({
-        "image" :  this.state.imageItem,
-        "address" : this.state.userAddress,
-        "comment" : this.state.commentItem,
-      })
-  
-      let config = {
-        method: 'post',
-        url: 'http://localhost:4000/item/create',
-        headers: { 
-          'Authorization': 'Bearer ' + this.state.userToken, 
-          'Content-Type': 'application/json'
-        },
-        data : data
-      };
-  
-      axios(config)
-      .then(() => {
-        // Ce que tu veux que ca fasse en retour
-      })
-    }
-  }
+
+
 
   getItemsByAddress = async () => {
-    if (this.state.userAddress && this.state.userToken ){ 
-  
-      axios.post("http://localhost:4000/item/items", { address: this.state.userAddress })
-      .then( res => {
-        console.log(res)
-        // Ce que tu veux que ca fasse en retour
-      })
-    }
+      if (this.state.userAddress && this.state.userToken){
+        axios.post("http://localhost:4000/item/items", { address: this.state.userAddress })
+        .then(res => {
+          console.log(res)
+          this.setState({allItems: res.data.data})
+        })
+      }
   }
 
-  deleteItem = async () => {
-    if (this.state.userAddress && this.state.userToken ){ 
-      let data = JSON.stringify({
-        "id" :  "60fb310cfba5196b4a3a952a" // La variable id de l'item à supprimer
-      })
-  
-      let config = {
-        method: 'delete',
-        url: 'http://localhost:4000/item/delete',
-        headers: { 
-          'Authorization': 'Bearer ' + this.state.userToken, 
-          'Content-Type': 'application/json'
-        },
-        data : data
-      };
-  
-      axios(config)
-      .then(res => {
-        console.log(res)
-        // Ce que tu veux que ca fasse en retour
-      })
-    }
-  }
-
-  createBid = async () => {
-    if (this.state.userAddress && this.state.userToken){ 
-      // Vérification qu'une enchère n'est pas déja présente pour un item 
-      let idItem = "60fb392a970d0e0d01eb9f9f" // a changer par la varibale de l'id de l'item 
-      axios.post("http://localhost:4000/bid/bidsItem", { id : idItem })
-      .then( res => {
-        if (res.status === 200){
-          // enchere déja présente pour cet item, impossible de créer une deuxième OU item id item incorrect 
-          console.log("enchère déja présente pout cet item ou id item incorrect")
-        } else {
-          let data = JSON.stringify({
-            "idItem" :  idItem, 
-            "dateEnd" : "2021-12-12", // a changer par la variable date end 
-            "actualPrice" : 150, // a changer par la variable prix
-            "creatorAddress" : this.state.userAddress,
-          })
-      
-          let config = {
-            method: 'post',
-            url: 'http://localhost:4000/bid/create',
-            headers: { 
-              'Authorization': 'Bearer ' + this.state.userToken, 
-              'Content-Type': 'application/json'
-            },
-            data : data
-          };
-      
-          axios(config) 
-          .then(res => { 
-            console.log(res) 
-            // Ce que tu veux que ca fasse en retour 
-          })
-        } 
-      })
-    } 
-  } 
 
   getAllBids = () => {
     axios.get("http://localhost:4000/bid/bids")
     .then(res => {
-      this.setState({allBids : res.data.data})
-      console.log("res: ",res)
-      console.log("allBids: ",this.state.allBids)
 
-      // Ce que tu veux que ca fasse en retour 
+      this.setState({allBids: res.data.data})
     })
   }
 
-  deleteBid = () => {
-    if (this.state.userAddress && this.state.userToken){ 
-      let data = JSON.stringify({
-        "id" : "60fb5506adecb778f701af88" // A remplacer par une variable
-      })
+//   openNewBid = (dateEnd,price,userAddress,userToken) => {
+//     createBid(dateEnd,price,userAddress,userToken)
+// }
 
-      let config = {
-        method: 'delete',
-        url: 'http://localhost:4000/bid/delete',
-        headers: { 
-          'Authorization': 'Bearer ' + this.state.userToken, 
-          'Content-Type': 'application/json'
-        },
-        data : data
-      };
 
-      axios(config) 
-      .then(res => { 
-        console.log(res) 
-        // Ce que tu veux que ca fasse en retour 
-      })
-    }
-  }
-
-  updateBid = () => {
-
-    let actualPriceOfBid = this.state.oldPrice
-    let newprice = this.state.newPrice
-    if (this.state.userAddress && this.state.userToken && newprice > actualPriceOfBid){ 
-      let data = JSON.stringify({
-        "id": this.state.idBidUpdate,
-
-        "active": true,
-        "actualPrice": newprice,
-        "bidderAddress": this.state.userAddress
-      })
-
-      let config = {
-        method: 'put',
-        url: 'http://localhost:4000/bid/update',
-        headers: { 
-          'Authorization': 'Bearer ' + this.state.userToken, 
-          'Content-Type': 'application/json'
-        },
-        data : data
-      };
-
-      axios(config) 
-      .then(res => { 
-        console.log(res)
-        console.log("updated")
-
-        // Ce que tu veux que ca fasse en retour 
-      })
-    }
-  }
 
 }
 
