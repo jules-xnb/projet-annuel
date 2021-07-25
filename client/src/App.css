@@ -54,21 +54,6 @@ div.itemmenu{
   font-size: medium;
 }
 
-/* div.itemmenu.home{
-  padding: 1.5em 0;
-  cursor: pointer;
-  color: #ffffff;
-}
-
-div.itemmenu.second{
-  padding: 1.5em 0;
-  cursor: pointer;
-  color: #ffffff;
-}
-
-div.itemmenu.third{
-  
-} */
 
 div.itemmenu{
   background-color: #1b1e24;
@@ -102,6 +87,12 @@ div.itemlast{
 
 div.connect{
   background-color: #1b1e24;
+  text-align: center;
+}
+
+div.newBid{
+  background-color: #1b1e24;
+  text-align: center;
 }
 
 
@@ -128,6 +119,8 @@ div.canvas{
   position: absolute;
   top: 0;
   left: 0;
+  height: 100vh;
+  /* position: sticky; */
 }
 
 div.background{
@@ -162,15 +155,25 @@ div.itemtitles{
   color: white;
   cursor: pointer;
   font-size:large;
+  text-align: center;
 }
 
 div.itemtitles:active{
   background-color: rgb(75, 75, 75);
 }
 
-div.forms{
+div.formsCo{
   padding: 2em;
 }
+
+div.formsNB{
+  padding: 2em;
+}
+
+div.dateEndDivNB, div.priceDivNB{
+  margin: 1em 0;
+}
+
 
 button{
   cursor: pointer;
@@ -180,25 +183,20 @@ button.connectMetaMask{
   margin: 2em 0;
 }
 
-div.componentAccount{
+div.componentAccount, div.componentItems, 
+div.componentBid, div.componentHP{
   padding: 1.5em;
 }
 
-div.wrapBid{
+div.wrapBid, div.wrapItems, div.createItem{
   padding: 1.5em 0;
 }
-div.componentBid{
-  padding: 1.5em;
-}
+
 
 div.componentHP{
-  padding: 1.5em;
   text-align: center;
 }
 
-div.componentBid > div {
-
-}
 
 div.divBidFlex{
   display: flex;
