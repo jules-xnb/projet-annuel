@@ -50,7 +50,6 @@ class App extends React.Component {
     imageItem : "test", // ?
     commentItem : "test", // ?
 
-
     allBids: [],
     allItems: [],
 
@@ -122,7 +121,6 @@ class App extends React.Component {
                   actualBalance : res2.data[0].actualBalance, 
                   totalBalance : res2.data[0].totalBalance,
                   connected: true
-
                 })
               })
           })
@@ -344,7 +342,6 @@ class App extends React.Component {
           <div className="divBidFlex">
             <h1>Les enchères</h1>
             <div></div>
-
             <button onClick={() => this.getAllBids()}>🔄 Reload</button>
           </div>
           {this.state.allBids.map((e) =>
@@ -368,11 +365,6 @@ class App extends React.Component {
               >Enchérir</button>
             </div>
           )}
-            <button>🔄 Reload</button>
-          </div>
-          <Bids 
-            disp = {this.state.displayBids}
-          />
         </div>
 
         <div className="componentItems" style={{display : this.state.displayItems ? 'block' : 'none', backgroundColor : "brown"}}>
@@ -458,7 +450,6 @@ class App extends React.Component {
   getAllBids = () => {
     axios.get("http://localhost:4000/bid/bids")
     .then(res => {
-
       this.setState({allBids: res.data.data})
     })
   }
@@ -466,7 +457,6 @@ class App extends React.Component {
 //   openNewBid = (dateEnd,price,userAddress,userToken) => {
 //     createBid(dateEnd,price,userAddress,userToken)
 // }
-
 
 
 }
