@@ -7,7 +7,7 @@ import Web3 from 'web3'
 import { abi } from './ABI/abi'
 import axios from 'axios'
 import Items from './Component/Pages/Items';
-import {createItem, deleteItem, formCreateItem} from './Functions/ItemFunc'
+import {createItem, deleteItem} from './Functions/ItemFunc'
 import {createBid, deleteBid, updateBid} from './Functions/BidFunc'
 
 
@@ -30,22 +30,22 @@ class App extends React.Component {
     privateKeyAdmin: "bcf1f68eac9b08b1e938079e4750f90b468d729b74366be99aac1ba16a1404da",
     publicKeyAdmin: "0x88352aDC0c6Fa220d6D5e5c797ACC5344f43ebD3",
     //chainURL: 'https://data-seed-prebsc-1-s1.binance.org:8545',
-    addressContract: "0xaba3B865A8b03f9636be1e1F47bc20248e6bad05", 
-    userAddress: null, 
-    userToken: null, 
-    contract : null, 
+    addressContract: "0xaba3B865A8b03f9636be1e1F47bc20248e6bad05",
+    userAddress: null,
+    userToken: null,
+    contract : null,
 
     actualBalance: 0,
     totalBalance: 0,
-    tokenWallet: 0, 
-    amountDepositWithdraw: 0, 
-    resDepositWithdraw: null, 
+    tokenWallet: 0,
+    amountDepositWithdraw: 0,
+    resDepositWithdraw: null,
     resDepositWithdraw2: null,
     resDepositWithdraw3: null,
     resDepositWithdraw4: null,
 
     buttonInscription : "Inscription/Connexion",
-    messageInscription : null, 
+    messageInscription : null,
 
     imageItem : "test", // ?
     commentItem : "test", // ?
@@ -55,17 +55,22 @@ class App extends React.Component {
 
     newPrice:0,
 
-    dateNewBid: 0,
     priceNewBid: 0,
+    dateEnd:'',
 
-    connected: false
+    connected: false,
+
+    inputImageCI:"",
+    inputCommentCI:"",
+
+    idItemCreate:"",
 
   }
 
   web3 = new Web3(window.ethereum)
- 
 
-  // ############################################ Connexion MetaMask ############################################       
+
+  // ############################################ Connexion MetaMask ############################################
 
   loadWeb3 = async () =>{
     if (window.ethereum) {
@@ -76,11 +81,10 @@ class App extends React.Component {
           })
       let newcontract = await new this.web3.eth.Contract(abi, this.state.addressContract)
       this.setState({contract: newcontract})
-      let res = await newcontract.methods.balanceOf(this.state.userAddress).call() 
+      let res = await newcontract.methods.balanceOf(this.state.userAddress).call()
       this.setState({ tokenWallet : res })
-      
     }
-    
+
   }
 
   // ############################################ Connexion / Inscription ############################################
@@ -116,9 +120,8 @@ class App extends React.Component {
               this.setState({userToken: res.data.token, messageInscription: "Connexion réussie", buttonInscription: "Connecté"})
               axios.post("http://localhost:4000/user/user", { address : this.state.userAddress})
               .then(res2 => {
-              //console.log(res)
                 this.setState({
-                  actualBalance : res2.data[0].actualBalance, 
+                  actualBalance : res2.data[0].actualBalance,
                   totalBalance : res2.data[0].totalBalance,
                   connected: true
                 })
@@ -134,8 +137,8 @@ class App extends React.Component {
    // ############################################ Deposit / Withdraw ############################################
 
   deposit = async () => {
-    this.setState({ 
-      resDepositWithdraw1 : null, 
+    this.setState({
+      resDepositWithdraw1 : null,
       resDepositWithdraw2 : null,
       resDepositWithdraw3 : null,
       resDepositWithdraw4 : null,
@@ -156,28 +159,28 @@ class App extends React.Component {
       .estimateGas({ from: this.state.publicKeyAdmin })
       let encoded = await this.state.contract.methods.transferToDepot(this.state.userAddress).encodeABI()
       let tx = {
-          to: this.state.addressContract, 
+          to: this.state.addressContract,
           data : encoded,
-          gasPrice, 
+          gasPrice,
           gas: gasEstimate
       }
       let signedtx = await web3.eth.accounts.signTransaction(tx, this.state.privateKeyAdmin)
       let res2 = await web3.eth.sendSignedTransaction(signedtx.rawTransaction)
       this.setState({ resDepositWithdraw3 : " Dépot sur la plateforme confirmé, mise à jour de vos balances : " + res2.transactionHash })
-      
+
       var ac = this.state.actualBalance * 1 + res * 1
       var tb = this.state.totalBalance * 1 + res * 1
 
       let data = JSON.stringify({
-        "address" : this.state.userAddress, 
+        "address" : this.state.userAddress,
         "actualBalance" : ac,
         "totalBalance" : tb
       })
       let config = {
         method: 'put',
         url: 'http://localhost:4000/user/update',
-        headers: { 
-          'Authorization': 'Bearer ' + this.state.userToken, 
+        headers: {
+          'Authorization': 'Bearer ' + this.state.userToken,
           'Content-Type': 'application/json'
         },
         data : data
@@ -185,12 +188,12 @@ class App extends React.Component {
       axios(config)
       .then(() => {
         this.setState({
-          actualBalance : ac, 
+          actualBalance : ac,
           totalBalance : tb,
         })
-        
+
       })
-      let res3 = await this.state.contract.methods.balanceOf(this.state.userAddress).call() 
+      let res3 = await this.state.contract.methods.balanceOf(this.state.userAddress).call()
       this.setState({ tokenWallet : res3 })
       this.setState({ resDepositWithdraw4 : "Balances mises à jour" })
     } else {
@@ -199,14 +202,14 @@ class App extends React.Component {
   }
 
   withdraw = async () => {
-    this.setState({ 
-      resDepositWithdraw1 : null, 
+    this.setState({
+      resDepositWithdraw1 : null,
       resDepositWithdraw2 : null,
       resDepositWithdraw3 : null,
       resDepositWithdraw4 : null,
     })
 
-    if (this.state.userAddress && this.state.userToken 
+    if (this.state.userAddress && this.state.userToken
       && this.state.amountDepositWithdraw > 0 && this.state.amountDepositWithdraw <= this.state.actualBalance ){
         this.setState({ resDepositWithdraw2 : "Demande de retrait en cours de traitement" })
       let web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545')
@@ -215,9 +218,9 @@ class App extends React.Component {
       .estimateGas({ from: this.state.publicKeyAdmin })
       let encoded = await this.state.contract.methods.withdraw(this.state.userAddress, this.state.amountDepositWithdraw).encodeABI()
       let tx = {
-        to: this.state.addressContract, 
+        to: this.state.addressContract,
         data : encoded,
-        gasPrice, 
+        gasPrice,
         gas: gasEstimate
     }
     let signedtx = await web3.eth.accounts.signTransaction(tx, this.state.privateKeyAdmin)
@@ -228,7 +231,7 @@ class App extends React.Component {
     var tb = this.state.totalBalance * 1 - this.state.amountDepositWithdraw * 1
 
     let data = JSON.stringify({
-      "address" : this.state.userAddress, 
+      "address" : this.state.userAddress,
       "actualBalance" : ac,
       "totalBalance" : tb
     })
@@ -236,8 +239,8 @@ class App extends React.Component {
     let config = {
       method: 'put',
       url: 'http://localhost:4000/user/update',
-      headers: { 
-        'Authorization': 'Bearer ' + this.state.userToken, 
+      headers: {
+        'Authorization': 'Bearer ' + this.state.userToken,
         'Content-Type': 'application/json'
       },
       data : data
@@ -246,11 +249,11 @@ class App extends React.Component {
     axios(config)
     .then(() => {
       this.setState({
-        actualBalance : ac, 
+        actualBalance : ac,
         totalBalance : tb,
       })
     })
-    let res3 = await this.state.contract.methods.balanceOf(this.state.userAddress).call() 
+    let res3 = await this.state.contract.methods.balanceOf(this.state.userAddress).call()
     this.setState({ tokenWallet : res3 })
     this.setState({ resDepositWithdraw4 : "Balances mises à jour" })
     } else {
@@ -264,7 +267,7 @@ class App extends React.Component {
       <div className="App">
 
         {/* ############################################ Boutton MenuBar ############################################ */}
-       
+
        <div className="BarMenu">
         <div className="firstBlock">
             <div className="itemmenu home">
@@ -294,7 +297,7 @@ class App extends React.Component {
           <div className="middleblock"></div>
 
           {/* ############################################ Boutton connexion ############################################ */}
-          
+
           <div className="connect">
                 <div className="itemlast connection">
                   <button className="button connexion" onClick={() => this.setState({showCanvasCo : true})}>{ this.state.buttonInscription }</button>
@@ -322,14 +325,15 @@ class App extends React.Component {
         </div>
 
         {/* ############################################ Blocks Main Page ############################################ */}
-        
+
         <HomePage disp = {this.state.displayHP}/>
-        <Account 
+        <Account
           disp = {this.state.displayAcc}
           address = {this.state.userAddress}
           actualBalance = {this.state.actualBalance}
           totalBalance = {this.state.totalBalance}
-          tokenWallet = {this.state.tokenWallet}
+          // token = {this.state.userToken}
+
         />
         <input type="text" onChange={e => this.setState({ amountDepositWithdraw: e.target.value })}/>
         <button onClick={()=> this.deposit()}>Deposit</button>
@@ -346,7 +350,7 @@ class App extends React.Component {
           </div>
           {this.state.allBids.map((e) =>
             <div>
-              <Bids 
+              <Bids
                 disp = {this.state.displayBids}
                 idItem = {e._id}
                 dateEnd = {e.dateEnd}
@@ -354,14 +358,19 @@ class App extends React.Component {
                 bidderAddress = {e.bidderAddress}
                 creatorAddress = {e.creatorAddress}
               />
-              <input 
-                type="number" 
-                placeholder="Le montant" 
+              <input
+                type="number"
+                placeholder="Le montant"
                 onChange={event => this.setState({newPrice: event.target.value})}
               />
-              
-              <button 
-              onClick={() => updateBid(this.state.newPrice,e._id,e.actualPrice,this.state.userAddress,this.tokenWallet)}
+
+              <button
+                onClick={() => updateBid(this.state.newPrice,e._id,e.actualPrice,this.state.userAddress,this.state.userToken)
+                // console.log("newprice",this.state.newPrice),
+                // console.log("actual price",e._id,e.actualPrice),
+                // console.log("useraddress",this.state.userAddress),
+                // console.log("usertoken",this.state.userToken) 
+                }
               >Enchérir</button>
             </div>
           )}
@@ -384,13 +393,13 @@ class App extends React.Component {
                 comment = {e.comment}
                 createdTimestamp = {e.createdTimestamp}
               />
-              <button onClick={() => deleteItem(e._id)}>
+              <button onClick={() => deleteItem(e._id,this.state.userAddress,this.state.userToken)}>
                 Supprimer
               </button>
-              <button onClick={() => this.setState({showCanvasNB: true,  overflow: "hidden"})}>
+              <button onClick={() => this.setState({showCanvasNB: true,  idItemCreate: e._id})}>
                 Créer un enchère
               </button>
-              
+
             </div>
           )}
 
@@ -403,7 +412,7 @@ class App extends React.Component {
 
                       <div className="dateEndDivNB">
                         <label for='text'>Date de fin de l'enchère : </label>
-                        <input type="number" placeholder="AAAA-MM-JJ" className="formDateEnd" onChange={(e) => this.setState({dateNewBid : e.target.value})}/>
+                        <input type="text" placeholder="AAAA-MM-JJ" className="formDateEnd" onChange={(e) => this.setState({dateEnd : e.target.value})}/>
                       </div>
 
                       <div className="priceDivNB">
@@ -412,9 +421,9 @@ class App extends React.Component {
                       </div>
 
 
-                      <input type="button" value="Submit" onClick={() => 
-                        createBid(this.state.dateEnd,this.state.priceNewBid,this.userAddress, this.tokenWallet),
-                        console.log(this.state.userAddress,this.state.tokenWallet,this.state.dateEnd,this.state.priceNewBid)
+                      <input type="button" value="Submit" onClick={() =>
+                        createBid(this.state.dateEnd,this.state.priceNewBid,this.state.idItemCreate,this.state.userAddress, this.state.userToken)
+                        // console.log("createBid",this.state.userAddress,this.state.userToken,this.state.dateEnd,this.state.priceNewBid)
                         }/>
                     </div>
                   </div>
@@ -423,12 +432,12 @@ class App extends React.Component {
 
           <div className="createItem">
             <h3>Créer un item</h3>
-            <input type="text" placeholder="image" className="inputImageCI"/>
-            <input type="text" placeholder="comment" className="inputCommentCI"/>
-            <button onClick={formCreateItem(this.state.userAddress, this.state.tokenWallet)}>Créer</button>
+            <input type="text" placeholder="image" className="inputImageCI" onChange={(e) => this.setState({inputImageCI:e.target.value})}/>
+            <input type="text" placeholder="comment" className="inputCommentCI" onChange={(e) => this.setState({inputCommentCI:e.target.value})}/>
+            <button onClick={() => createItem(this.state.inputImageCI,this.state.inputCommentCI,this.state.userAddress, this.state.userToken)}>Créer</button>
           </div>
         </div>
-      
+
       </div>
     );
   }
@@ -440,7 +449,6 @@ class App extends React.Component {
       if (this.state.userAddress && this.state.userToken){
         axios.post("http://localhost:4000/item/items", { address: this.state.userAddress })
         .then(res => {
-          console.log(res)
           this.setState({allItems: res.data.data})
         })
       }
@@ -454,9 +462,6 @@ class App extends React.Component {
     })
   }
 
-//   openNewBid = (dateEnd,price,userAddress,userToken) => {
-//     createBid(dateEnd,price,userAddress,userToken)
-// }
 
 
 }
