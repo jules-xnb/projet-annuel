@@ -21,7 +21,7 @@ export const createItem = async (image,comment,userAddress,userToken) => {
 
     axios(config)
     .then(() => {
-      this.getItemsByAddress()
+      console.log("item créé")
     })
   }
 }
