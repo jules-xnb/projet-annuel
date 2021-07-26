@@ -446,13 +446,12 @@ class App extends React.Component {
 
 
   getItemsByAddress = async () => {
-    console.log(this.state.userAddress,this.state.userToken)
-    if (this.state.userAddress && this.state.userToken){
-      axios.post("http://localhost:4000/item/items", { address: this.state.userAddress })
-      .then(res => {
-        this.setState({allItems: res.data.data})
-      })
-    }
+      if (this.state.userAddress && this.state.userToken){
+        axios.post("http://localhost:4000/item/items", { address: this.state.userAddress })
+        .then(res => {
+          this.setState({allItems: res.data.data})
+        })
+      }
   }
 
 

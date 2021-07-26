@@ -93,7 +93,7 @@ deleteItem = (req, res) => {
 
 
 getItems = (req, res) => {
-    Item.find({ possAddress: req.body.address }, (err, items) => {
+    Item.find({ possAddress : req.body.address }, (err, items) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -105,6 +105,7 @@ getItems = (req, res) => {
         return res.status(200).json({ success: true, data: items })
     }).catch(err => console.log(err))
 }
+
 
 module.exports = {
     createItem,

@@ -7,7 +7,7 @@ const router = express.Router()
 router.post('/create', auth, itemController.createItem)
 router.put('/update', auth, itemController.updateItem)
 router.delete('/delete', auth, itemController.deleteItem)
-router.get('/items', itemController.getItems)
+router.post('/items', itemController.getItems)
 
 module.exports = router
 
