@@ -102,6 +102,7 @@ div.itemlast{
 
 div.connect{
   background-color: #1b1e24;
+  text-align: center;
 }
 
 
@@ -180,24 +181,17 @@ button.connectMetaMask{
   margin: 2em 0;
 }
 
-div.componentAccount{
+div.componentAccount, div.componentBid, div.componentItems{
   padding: 1.5em;
 }
 
-div.wrapBid{
+div.wrapBid, div.wrapItems{
   padding: 1.5em 0;
-}
-div.componentBid{
-  padding: 1.5em;
 }
 
 div.componentHP{
   padding: 1.5em;
   text-align: center;
-}
-
-div.componentBid > div {
-
 }
 
 div.divBidFlex{
