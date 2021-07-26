@@ -7,6 +7,7 @@ class Account extends React.Component{
                 <div className="wrapAccount">
                     <h1>Votre compte</h1>
                     <div className="accountItem address">Votre adresse : {this.props.address}</div>
+                    <div className="accountItem tokenWallet">Tokens sur Metamask : {this.props.tokenWallet}</div>
                     <div className="accountItem actualBalance">Votre balance actuelle : {this.props.actualBalance}</div>
                     <div className="accountItem totalBalance">Votre balance total : {this.props.totalBalance}</div>
                     {/* <div className="accountItem token">Votre token : {this.props.token}</div> */}
