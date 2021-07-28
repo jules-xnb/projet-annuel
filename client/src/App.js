@@ -47,16 +47,13 @@ class App extends React.Component {
     buttonInscription : "Inscription/Connexion",
     messageInscription : null,
 
-    imageItem : "test", // ?
-    commentItem : "test", // ?
-
     allBids: [],
     allItems: [],
 
     newPrice:0,
 
-    priceNewBid: 0,
-    dateEnd:'',
+    dateEnd: null,
+    priceNewBid: null,
 
     connected: false,
 
@@ -352,7 +349,8 @@ class App extends React.Component {
             <div>
               <Bids
                 disp = {this.state.displayBids}
-                idItem = {e._id}
+                id = {e._id}
+                idItem = {e.idItem}
                 dateEnd = {e.dateEnd}
                 actualPrice = {e.actualPrice}
                 bidderAddress = {e.bidderAddress}
@@ -396,39 +394,16 @@ class App extends React.Component {
               <button onClick={() => deleteItem(e._id,this.state.userAddress,this.state.userToken)}>
                 Supprimer
               </button>
-              <button onClick={() => this.setState({showCanvasNB: true,  idItemCreate: e._id})}>
-                Créer un enchère
-              </button>
+              <div>
+                  <input type="text" placeholder="AAAA-MM-JJ" className="formDateEnd" onChange={(e) => this.setState({dateEnd : e.target.value})}/>
+                  <input type="number" placeholder="Prix" className="formPrice" onChange={(e) => this.setState({priceNewBid : e.target.value})}/>
+                <button onClick={() => createBid(this.state.dateEnd,this.state.priceNewBid,e._id,this.state.userAddress, this.state.userToken)}>
+                  Créer un enchère
+                </button>
+              </div>
 
             </div>
           )}
-
-            <div className="newBid">
-              <div className="canvas" style={{display : this.state.showCanvasNB ? 'block' : 'none'}}>
-                  <div className="background" onClick={() => this.setState({showCanvasNB : false, overflow: "none"})}></div>
-                  <div className="form">
-                    <div className="formsNB">
-                      <h1>Nouvelle enchère</h1>
-
-                      <div className="dateEndDivNB">
-                        <label for='text'>Date de fin de l'enchère : </label>
-                        <input type="text" placeholder="AAAA-MM-JJ" className="formDateEnd" onChange={(e) => this.setState({dateEnd : e.target.value})}/>
-                      </div>
-
-                      <div className="priceDivNB">
-                        <label for='text'>Price de départ : </label>
-                        <input type="number" placeholder="Prix" className="formPrice" onChange={(e) => this.setState({priceNewBid : e.target.value})}/>
-                      </div>
-
-
-                      <input type="button" value="Submit" onClick={() =>
-                        createBid(this.state.dateEnd,this.state.priceNewBid,this.state.idItemCreate,this.state.userAddress, this.state.userToken)
-                        // console.log("createBid",this.state.userAddress,this.state.userToken,this.state.dateEnd,this.state.priceNewBid)
-                        }/>
-                    </div>
-                  </div>
-              </div>
-            </div>
 
           <div className="createItem">
             <h3>Créer un item</h3>

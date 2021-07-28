@@ -1,53 +1,34 @@
 import axios from 'axios'
 
 export const createBid = async (dateEnd,price,idItem,userAddress,userToken) => {
-  console.log(userToken)
+  console.log("create bid",dateEnd)
+  console.log("create bid",price)
+  console.log("create bid",idItem)
+  console.log("create bid",userAddress)
   if (userAddress && userToken){
-    // Vérification qu'une enchère n'est pas déja présente pour un item 
-    console.log("ok1")
-    axios.post("http://localhost:4000/bid/create", { id : idItem })
-    .then( res => {
-      if (res.status === 200){
-        // enchere déja présente pour cet item, impossible de créer une deuxième OU item id item incorrect 
-        console.log("enchère déja présente pout cet item ou id item incorrect")
-      } 
-      else {
-        console.log("ok2")
-        let data = JSON.stringify({
-          "idItem" :  idItem, 
-          "dateEnd" : dateEnd,
-          "actualPrice" : price,
-          "creatorAddress" : userAddress,
-      })
-      console.log("ok2.2")
-      let config = {
+    let data = JSON.stringify({
+      "idItem" :  idItem,
+      "dateEnd" : dateEnd,
+      "actualPrice" : price,
+      "creatorAddress" : userAddress
+    })
+
+    let config = {
       method: 'post',
       url: 'http://localhost:4000/bid/create',
       headers: { 
-          'Authorization': 'Bearer ' + userToken, 
-          'Content-Type': 'application/json'
+        'Authorization': 'Bearer ' + userToken, 
+        'Content-Type': 'application/json'
       },
       data : data
-      };
-      console.log("ok3")
-      axios(config) 
-      console.log("ok4")
-      .then(res => {
-          console.log("creation enchère") 
-          console.log(res)
-          // Ce que tu veux que ca fasse en retour 
-      })
-      }
+    };
+
+    axios(config)
+    .then(() => {
+      console.log("bid créé")
     })
   }
-  else{
-      console.log("Bad UserAddress ",userAddress)
-      console.log("Bad TokenWallet: ",userToken)
-      console.log("Bad dateEnd ",dateEnd)
-      console.log("Bad price ",price)
-  }
-} 
-
+}
 
 export const deleteBid = (userAddress,userToken) => {
   if (userAddress && userToken){ 
