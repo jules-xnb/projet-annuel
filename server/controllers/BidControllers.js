@@ -11,7 +11,7 @@ createBid = (req, res) => {
     }
 
     const bid = new Bid({
-        idItem: body.idItem, 
+        idItem: body.idItem,
         dateEnd: body.dateEnd, 
         actualPrice: body.actualPrice, 
         bidderAddress: "pas encore d'acheteur",
