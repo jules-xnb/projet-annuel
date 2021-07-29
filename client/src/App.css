@@ -177,6 +177,17 @@ div.dateEndDivNB, div.priceDivNB{
 
 button{
   cursor: pointer;
+  font-size: 17px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  display: inline-block;
+  padding: 8px 16px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+  margin: 0 1em;
 }
 
 button.connectMetaMask{
@@ -188,7 +199,7 @@ div.componentBid, div.componentHP{
   padding: 1.5em;
 }
 
-div.wrapBid, div.wrapItems, div.createItem{
+div.wrapBid, div.wrapItems, div.createItem, div.wrapAcc{
   padding: 1.5em 0;
 }
 
@@ -208,23 +219,9 @@ div.divBidFlex > h1 + button{
 }
 
 div.divBidFlex > button{
-  /* flex: 1; */
-  /* width: 1em; */
-  font-size: 17px;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
-  display: inline-block;
-  padding: 8px 16px;
-  vertical-align: middle;
-  overflow: hidden;
-  text-decoration: none;
-  text-align: center;
-  cursor: pointer;
-  white-space: nowrap;
   background-color: #db9704;
   color: #ffffff;
   border-color: #db9704;
-  margin: 0 1em;
 }
 
 div.divBidFlex > div{
