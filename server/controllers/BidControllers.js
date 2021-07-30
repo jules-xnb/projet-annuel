@@ -49,16 +49,16 @@ updateBid = async (req, res) => {
         })
     }
 
-    Bid.findOne({ _id: req.body.id }, (err, bid) => {
+    Bid.findOne({ _id: body.id }, (err, bid) => {
         if (err) {
             return res.status(404).json({
                 err,
                 message: 'Bid not found!',
             })
         }
-        bid.active = body.active
         bid.actualPrice = body.actualPrice, 
-        bid.bidderAddress = body.bidderAddress
+        bid.active = body.active,
+        bid.bidderAddress = body.bidderAddress,
         bid
             .save()
             .then(() => {
@@ -77,6 +77,7 @@ updateBid = async (req, res) => {
     })
 }
 
+
 deleteBid = async (req, res) => {
     await Bid.findOneAndDelete({ _id: req.body.id }, (err, bid) => {
         if (err) {
@@ -94,7 +95,7 @@ deleteBid = async (req, res) => {
 }
 
 getBidsByItem = async (req, res) => {
-    await Bid.find({ idItem : req.body.id }, (err, bids) => {
+    await Bid.find({ idItem : req.body.id, active : true }, (err, bids) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -108,7 +109,7 @@ getBidsByItem = async (req, res) => {
 }
 
 getBids = async (req, res) => {
-    await Bid.find({}, (err, bids) => {
+    await Bid.find({ active : true }, (err, bids) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -126,5 +127,5 @@ module.exports = {
     updateBid,
     deleteBid,
     getBidsByItem, 
-    getBids
+    getBids    
 }

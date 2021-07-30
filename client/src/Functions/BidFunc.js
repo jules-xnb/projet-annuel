@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export const createBid = async (dateEnd,price,idItem,userAddress,userToken) => {
   console.log("create bid",dateEnd)
@@ -54,34 +54,38 @@ export const deleteBid = (userAddress,userToken) => {
   }
 }
 
-export const updateBid = (newPrice, idBidUpdate, oldPrice,userAddress,userToken) => {
-  if (userAddress && userToken && newPrice > oldPrice){ 
-    let data = JSON.stringify({
-      "id": idBidUpdate,
-      "active": true,
-      "actualPrice": newPrice,
-      "bidderAddress": userAddress
-    })
+export const compDates = (endDate,dateNow) => {
+  let yED = endDate.substring(0,4)
+  let yDN = dateNow.substring(0,4)
+  let mED = endDate.substring(5,7)
+  let mDN = dateNow.substring(5,7)
+  let dED = endDate.substring(8,10)
+  let dDN = dateNow.substring(8,10)
 
-    let config = {
-      method: 'put',
-      url: 'http://localhost:4000/bid/update',
-      headers: { 
-        'Authorization': 'Bearer ' + userToken, 
-        'Content-Type': 'application/json'
-      },
-      data : data
-    };
-
-    axios(config) 
-    .then(res => { 
-      console.log(res)
-      console.log("updated")
-    })
-  }
-  else if(userAddress && userToken && newPrice < oldPrice){
-    //TODO si on a le temps > rajouter un message d'erreur indiquant que le prix de surenchérissement
-    //est plus faible que le prix actuel
-  }
+  if(yED < yDN) return true;
+  else if(yED === yDN && mED < mDN) return true;
+  else if(yED === yDN && mED === mDN && dED < dDN) return true;
+  else return false;
+  
 }
+
+export const closeBid = (idBid,userToken) => {
+  let data = JSON.stringify({
+    "id": idBid,
+    "active": false
+  })
+
+  let config = {
+    method: 'put',
+    url: 'http://localhost:4000/bid/close',
+    headers: { 
+      'Authorization': 'Bearer ' + userToken, 
+      'Content-Type': 'application/json'
+    },
+    data : data
+  };
+
+  axios(config)
+}
+
 

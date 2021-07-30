@@ -95,9 +95,25 @@ exports.update = (req, res, next) => {
             })
     })
 
-    
-  
 };
+
+
+exports.getUser = (req, res, next) => {
+  const body = req.body
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide data',
+        })
+    }
+
+    User.findOne({ address: body.address })
+    .then(data => res.status(201).json(data))
+    .catch(error => res.status(401).json(error))
+};
+
+
 
 exports.getAll = (req, res, next) => {
   User.find({})
