@@ -158,8 +158,8 @@ class App extends React.Component {
       let res2 = await web3.eth.sendSignedTransaction(signedtx.rawTransaction)
       this.setState({ resDepositWithdraw3 : " Dépot sur la plateforme confirmé, mise à jour de vos balances : " + res2.transactionHash })
 
-      var ac = this.state.actualBalance + res
-      var tb = this.state.totalBalance + res
+      var ac = this.state.actualBalance * 1 + res * 1
+      var tb = this.state.totalBalance * 1 + res * 1
 
       updateUser(ac,tb,this.state.userAddress,this.state.userToken)
       
@@ -197,8 +197,8 @@ class App extends React.Component {
     let res2 = await web3.eth.sendSignedTransaction(signedtx.rawTransaction)
     this.setState({ resDepositWithdraw3 : " Retrait sur la plateforme confirmé, mise à jour de vos balances : " + res2.transactionHash })
 
-    var ac = this.state.actualBalance - this.state.amountDepositWithdraw
-    var tb = this.state.totalBalance - this.state.amountDepositWithdraw
+    var ac = this.state.actualBalance * 1 - this.state.amountDepositWithdraw * 1
+    var tb = this.state.totalBalance * 1 - this.state.amountDepositWithdraw * 1
 
     updateUser(ac,tb,this.state.userAddress,this.state.userToken)
 
@@ -276,7 +276,7 @@ class App extends React.Component {
         {/* ############################################ Blocks Main Page ############################################ */}
 
         <HomePage disp = {this.state.displayHP}/>
-        <div className="componentAccount" style={{display : this.state.displayAcc ? 'block' : 'none', backgroundColor : "red"}}>
+        <div className="componentAccount" style={{display : this.state.displayAcc ? 'block' : 'none', backgroundColor : "#23272f"}}>
           <div className="divBidFlex">
             <h1>Votre compte</h1>
             <div></div>
@@ -288,15 +288,17 @@ class App extends React.Component {
             totalBalance = {this.state.totalBalance}
           />
         </div>
-
-        <input type="text" onChange={e => this.setState({ amountDepositWithdraw: e.target.value })}/>
-        <button onClick={()=> this.deposit()}>Deposit</button>
-        <button onClick={()=> this.withdraw()}>Withdraw</button>
-        <div>{ this.state.resDepositWithdraw1 }</div>
-        <div>{ this.state.resDepositWithdraw2 }</div>
-        <div>{ this.state.resDepositWithdraw3 }</div>
-        <div>{ this.state.resDepositWithdraw4 }</div>
-        <div className="componentBid" style={{display : this.state.displayBids ? 'block' : 'none', backgroundColor : "green"}}>
+        <div className="wddp">
+          <h1>Withdraw / Deposit</h1>
+          <input type="text" onChange={e => this.setState({ amountDepositWithdraw: e.target.value })}/>
+          <button onClick={()=> this.deposit()}>Deposit</button>
+          <button onClick={()=> this.withdraw()}>Withdraw</button>
+          <div>{ this.state.resDepositWithdraw1 }</div>
+          <div>{ this.state.resDepositWithdraw2 }</div>
+          <div>{ this.state.resDepositWithdraw3 }</div>
+          <div>{ this.state.resDepositWithdraw4 }</div>
+        </div>
+        <div className="componentBid" style={{display : this.state.displayBids ? 'block' : 'none', backgroundColor : "#23272f"}}>
           <div className="divBidFlex">
             <h1>Les enchères</h1>
             <div></div>
@@ -325,7 +327,7 @@ class App extends React.Component {
           )}
         </div>
 
-        <div className="componentItems" style={{display : this.state.displayItems ? 'block' : 'none', backgroundColor : "brown"}}>
+        <div className="componentItems" style={{display : this.state.displayItems ? 'block' : 'none', backgroundColor : "#23272f"}}>
           <div className="divBidFlex">
             <h1>Tous vos items</h1>
             <div></div>
@@ -429,11 +431,11 @@ class App extends React.Component {
           let ac
           let tb = this.state.totalBalance
 
-          ac = this.state.actualBalance - newPrice
+          ac = this.state.actualBalance * 1 - newPrice * 1
 
           updateUser(ac,tb,userAddress,userToken)
 
-          ac = this.state.actualBalance + oldPrice
+          ac = this.state.actualBalance * 1 + oldPrice * 1
 
           updateUser(ac,tb,creatorAddress,userToken)
 
